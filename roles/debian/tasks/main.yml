@@ -14,11 +14,13 @@
   when: ansible_os_family == "Debian"
   notify:
   - log to file
+  ignore_errors: yes
 
 - name: check if running in a BrandZ zone
   command: uname -v
   register: not_in_zone
   changed_when: "'BrandZ virtual linux' not in not_in_zone.stdout"
+  ignore_errors: yes
 
 - name: run checkrestart
   command: checkrestart
