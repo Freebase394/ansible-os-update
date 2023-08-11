@@ -4,6 +4,7 @@
     name: debian-goodies
     state: latest
   when: ansible_os_family == "Debian"
+  ignore_errors: yes
 
 - name: debian apt-get dist-upgrade
   apt:
