@@ -35,15 +35,31 @@
   register: running_kernel
   when: not_in_zone.changed
 
-- name: check installed kernel latest version
+# Task description
+- name: Check installed kernel latest version
+
+  # Execute shell command to retrieve the latest version of installed kernel
   shell: "dpkg -l | grep linux-image | grep -v 'meta-package' | grep ii | awk '{print $3}' | sort -n | tail -1"
+  
+  # Register the output of the shell command into the variable 'installed_kernel'
   register: installed_kernel
+
+  # Define conditions for considering the task 'changed'
   changed_when: running_kernel.stdout != installed_kernel.stdout
+
+  # Specify conditions for when the task should be executed
   when:
-  - not_in_zone.changed
-  - ansible_architecture != "armv6l"
+    # Check if the 'not_in_zone.changed' variable is not true
+    - not_in_zone.changed
+
+    # Check if the system architecture is not 'armv6l'
+    - ansible_architecture != "armv6l"
+
+  # Notify the handler named 'reboot' if the task completes successfully and meets the 'when' conditions
   notify:
-  - reboot
+    - reboot
+  ignore_errors: yes
+
 
 - meta: flush_handlers
 
